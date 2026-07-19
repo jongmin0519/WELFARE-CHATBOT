@@ -64,15 +64,20 @@ python cli.py "기초연금은 얼마나 받을 수 있나요?"
 
 ### AI 상담 모드 켜기
 
-[Anthropic Console](https://console.anthropic.com)에서 API 키를 발급받아
-환경변수로 설정하면 자연스러운 상담 답변이 생성됩니다.
+두 가지 LLM 제공자를 지원합니다. 키를 환경변수로 설정하면 자동으로 AI 상담 모드가 켜집니다.
+
+| 우선순위 | 제공자 | 환경변수 | 키 발급 | 비고 |
+|---------|--------|---------|---------|------|
+| 1 | **Groq** (Llama 3.3 70B) | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) | **무료 티어 제공** |
+| 2 | **Claude** (Anthropic) | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) | 유료 (크레딧 충전) |
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...   # macOS/Linux
+export GROQ_API_KEY=gsk_...           # macOS/Linux
 streamlit run streamlit_app.py
 ```
 
-모델 변경: `CLAUDE_MODEL` 환경변수 (기본 `claude-sonnet-4-5`, 저렴한 옵션 `claude-haiku-4-5`)
+모델 변경: `GROQ_MODEL` (기본 `llama-3.3-70b-versatile`) 또는
+`CLAUDE_MODEL` (기본 `claude-sonnet-4-5`) 환경변수
 
 ## ☁️ 배포 (Render)
 
@@ -97,12 +102,12 @@ welfare-chatbot/
 │   ├── retriever.py    # BM25 검색 (직접 구현, 외부 라이브러리 불필요)
 │   └── generator.py    # Claude API 호출 + 검색 모드 폴백
 ├── data/               # 📚 지식베이스 (여기만 바꾸면 다른 도메인 챗봇이 됨)
-│   ├── 기초연금.md
-│   ├── 노인장기요양보험.md
-│   ├── 노인맞춤돌봄서비스.md
-│   ├── 치매지원.md
-│   ├── 노인일자리.md
-│   └── 기타혜택.md
+│   ├── 01_basic_pension.md      # 기초연금
+│   ├── 02_longterm_care.md      # 노인장기요양보험
+│   ├── 03_care_service.md       # 노인맞춤돌봄서비스
+│   ├── 04_dementia_support.md   # 치매 지원
+│   ├── 05_senior_jobs.md        # 노인일자리
+│   └── 06_other_benefits.md     # 기타 생활 혜택
 ├── render.yaml         # Render 배포 설정 (Blueprint)
 ├── DEPLOY.md           # 배포 가이드
 └── requirements.txt

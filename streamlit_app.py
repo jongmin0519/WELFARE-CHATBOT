@@ -14,7 +14,7 @@ import streamlit as st
 
 from rag.loader import load_chunks
 from rag.retriever import BM25Retriever, TOKENIZER
-from rag.generator import generate_answer, api_key
+from rag.generator import generate_answer, api_key, provider_label
 
 BASE = Path(__file__).resolve().parent
 
@@ -34,20 +34,30 @@ def get_retriever() -> BM25Retriever:
 retriever = get_retriever()
 llm_on = bool(api_key())
 
+# 지식베이스가 비어 있으면 명확한 오류 안내 (배포 시 data/ 누락 진단용)
+if not retriever.chunks:
+    st.error(
+        "🚨 지식베이스가 비어 있습니다 (청크 0개).\n\n"
+        "`data/` 폴더에 `.md` 문서가 없습니다. GitHub 저장소에 "
+        "`data/*.md` 파일들이 올라가 있는지 확인한 뒤 다시 배포하세요."
+    )
+    st.stop()
+
 # ── 사이드바 ──────────────────────────────────────────────
 with st.sidebar:
     st.header("ℹ️ 챗봇 정보")
     st.markdown(
         f"""
 - **모드**: {"🤖 AI 상담 모드" if llm_on else "🔎 검색 모드 (API 키 없음)"}
+- **모델**: {provider_label()}
 - **지식베이스**: 청크 {len(retriever.chunks)}개
 - **토크나이저**: {TOKENIZER}
 """
     )
     if not llm_on:
         st.info(
-            "환경변수 `ANTHROPIC_API_KEY`를 설정하면 자료를 바탕으로 "
-            "자연스러운 상담 답변을 생성합니다."
+            "환경변수 `GROQ_API_KEY`(무료) 또는 `ANTHROPIC_API_KEY`를 설정하면 "
+            "자료를 바탕으로 자연스러운 상담 답변을 생성합니다."
         )
     st.divider()
     st.caption(

@@ -10,5 +10,7 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
+      - key: GROQ_API_KEY
+        sync: false   # 대시보드에서 직접 입력 (무료 티어 있음, 코드에 키를 넣지 마세요!)
       - key: ANTHROPIC_API_KEY
-        sync: false   # 대시보드에서 직접 입력 (코드에 키를 넣지 마세요!)
+        sync: false   # 선택 사항 (GROQ_API_KEY가 없을 때 사용)

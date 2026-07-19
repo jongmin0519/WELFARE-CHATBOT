@@ -10,7 +10,7 @@ from pathlib import Path
 
 from rag.loader import load_chunks
 from rag.retriever import BM25Retriever, TOKENIZER
-from rag.generator import generate_answer, api_key
+from rag.generator import generate_answer, api_key, provider_label
 
 BASE = Path(__file__).resolve().parent
 
@@ -18,7 +18,7 @@ BASE = Path(__file__).resolve().parent
 def main() -> None:
     chunks = load_chunks(BASE / "data")
     retriever = BM25Retriever(chunks)
-    mode = "AI 상담 모드 (Claude API)" if api_key() else "검색 모드 (API 키 없음)"
+    mode = f"AI 상담 모드 ({provider_label()})" if api_key() else "검색 모드 (API 키 없음)"
     print(f"📚 문서 {len(chunks)}개 청크 로드 완료 | 토크나이저: {TOKENIZER} | {mode}")
 
     def ask(q: str) -> None:
